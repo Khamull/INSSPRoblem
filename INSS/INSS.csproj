@@ -46,7 +46,9 @@
     <Compile Include="CalculadorInss.cs" />
     <Compile Include="ICalculadorInss.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TaxRangeDictionary.cs" />
+    <Compile Include="RateByYearDictionary.cs" />
+    <Compile Include="TaxRate.cs" />
+    <Compile Include="Year.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

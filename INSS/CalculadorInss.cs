@@ -10,30 +10,10 @@ namespace INSS
     {
         private int Year;
         private decimal Income;
-        private decimal Discount;
-        public decimal _Discount
-        {
-            get { return Discount; }
-            set { Discount = value; }
-        }
 
-
-        public decimal _Income
+        private decimal CalcularDesconto()
         {
-            get { return Income; }
-            set { Income = value; }
-        }
-
-        public int _Year
-        {
-            get { return Year; }
-            set { Year = value; }
-        }
-
-        private decimal _CalcularDesconto()
-        {
-            IEnumerable<decimal> ceiling, rate;
-            GetVariables(out ceiling, out rate);
+            GetVariables(out IEnumerable<decimal> ceiling, out IEnumerable<decimal> rate);
             if (rate.FirstOrDefault() == 0)
                 return ceiling.FirstOrDefault();
 
@@ -42,17 +22,17 @@ namespace INSS
 
         private void GetVariables(out IEnumerable<decimal> ceiling, out IEnumerable<decimal> rate)
         {
-            var taxes = IRateDictionary.LoadDictionary();
-            var taxesoftheyear = taxes._TaxLane.Where(s => s.Key._Year.Equals(Year));
-            ceiling = taxesoftheyear.Select(s => s.Key._Ceiling);
-            rate = taxesoftheyear.Where(s => s.Key._Year.Equals(Year))
-                .Select(x => x.Value.Where(j => (double)_Income >= (double)j._Min && (double)_Income <= (double)j._Max)
-                .Select(y => y._Irate).FirstOrDefault());
+            var taxes = RatesByYearsDictionary.LoadDictionary();
+            var taxesoftheyear = taxes.TaxByYearLane.Where(s => s.Key.Year.Equals(Year));
+            ceiling = taxesoftheyear.Select(s => s.Key.Ceiling);
+            rate = taxesoftheyear.Where(s => s.Key.Year.Equals(Year))
+                .Select(x => x.Value.Where(j => (double)Income >= (double)j.Min && (double)Income <= (double)j.Max)
+                .Select(y => y.Rate).FirstOrDefault());
         }
 
         private decimal Calculo(decimal rate, decimal ceiling)
         {
-            return this._Income * (rate / 100) >= ceiling ? ceiling : this._Income * (rate / 100); ;
+            return Math.Round(this.Income * (rate / 100) >= ceiling ? ceiling : this.Income * (rate / 100), 2);
         }
 
         /// <summary>
@@ -62,9 +42,7 @@ namespace INSS
         {
             this.Year = data.Year;
             this.Income = salario;
-            return _CalcularDesconto();
+            return CalcularDesconto();
         }
-
-        
     }
 }
